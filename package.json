@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/jp-chl/node-base-docker/issues"
   },
-  "homepage": "https://github.com/jp-chl/node-base-docker#readme"
+  "homepage": "https://github.com/jp-chl/node-base-docker#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
