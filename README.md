@@ -1,10 +1,11 @@
-** Based on **:
+# Simple dockerized javascript app. All node_modules are generated only withing docker image.
 
+### Based on:
 - https://jdlm.info/articles/2019/09/06/lessons-building-node-app-docker.html
 - https://github.com/jdleesmiller/docker-chat-demo
 
 
-Usage:
+### Usage:
 
 `docker build . -t chat:latest`
 
