@@ -30,3 +30,14 @@ drwxr-xr-x 2 node node 4096 Jul 27 17:24 accepts
 ...
 drwxr-xr-x 2 node node 4096 Jul 27 17:24 vary
 </pre>
+
+`docker-compose run --rm chat npm install --save socket.io@1        at 13:38:45`
+<pre>
+npm WARN deprecated json3@3.3.2: Please use the native JSON object instead of JSON 3
+npm WARN chat@1.0.0 No description
+
++ socket.io@1.7.4
+added 52 packages from 37 contributors and audited 102 packages in 10.492s
+found 9 vulnerabilities (8 low, 1 high)
+  run `npm audit fix` to fix them, or `npm audit` for details
+</pre>
