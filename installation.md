@@ -1,5 +1,7 @@
 
-# Based on 
+# Based on:
+- https://jdlm.info/articles/2019/09/06/lessons-building-node-app-docker.html
+- https://github.com/jdleesmiller/docker-chat-demo
 
 `docker-compose run --rm chat bash                                  at 13:23:42 `
 <pre>

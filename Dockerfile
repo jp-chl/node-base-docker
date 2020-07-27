@@ -1,5 +1,5 @@
 # Official Docker image for the latest long term support (LTS) node release
-FROM node:10.16.3
+FROM node:10.16.3 AS development
 
 # These commands we need to run as root,
 # create the working directory and make sure that it’s owned by the node user
@@ -37,9 +37,42 @@ COPY --chown=node:node package.json package-lock.json ./
 # install the dependencies in /srv/chat/node_modules inside the container
 RUN npm install --quiet
 
+
 # The npm install is what we want, but it causes a problem in development when we bind mount the application
 #  folder on the host over /srv/chat. Unfortunately, the node_modules folder doesn’t exist on the host,
 # so the bind effectively hides the node modules that we installed in the image.
 # The final mkdir -p node_modules step and the next section are related to how we deal with this
+
+# TODO: It can be removed once in we have some dependencies in package.json
 RUN mkdir -p node_modules
+
+# --------------
+# Docker provide a powerful tool that helps with all of the above: multi-stage
+# builds. The main idea is that we can have multiple FROM commands in the 
+# Dockerfile, one per stage, and each stage can copy files from previous stages
+FROM node:10.16.3-slim AS production
+
+USER node
+
+# We have to repeat the WORKDIR, because it doesn’t persist into the second stage automatically
+WORKDIR /srv/chat
+
+# The multi-stage Dockerfile runs npm install in the first stage, which has the full node image at
+# its disposal for the build. Then it copies the resulting node_modules folder to the second stage image,
+# which uses the slim base image. This technique reduces the size of the production image from 909MB to 152MB,
+# which is about a factor of 6 saving for relatively little effort
+#
+# The COPY --from=development --chown=root:root ... line copies the dependencies installed in the preceding 
+# development stage into the production stage and makes them owned by root,
+# so the node user can read but not write them
+COPY --from=development --chown=root:root /srv/chat/node_modules ./node_modules
+
+# The COPY . . line then copies the rest of the application files from the host to the working directory
+# in the container, namely /srv/chat
+COPY . .
+
+# Finally, the CMD step specifies the command to run. In the development stage, the application files came from bind 
+# mounts set up with docker-compose, so it made sense to specify the command in the docker-compose.yml file instead of 
+# the Dockerfile. Here it makes more sense to specify the command in the Dockerfile, which builds it into the container
+CMD ["node", "index.js"]
 
